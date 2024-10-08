@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiDAR Control Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        button {
+            display: inline-block;
+            padding: 15px 25px;
+            font-size: 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            border: none;
+        }
+        .on {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .off {
+            background-color: #f44336;
+            color: white;
+        }
+        .reboot {
+            background-color: #ff9800;
+            color: white;
+        }
+        .shutdown {
+            background-color: #d9534f;
+            color: white;
+        }
+    </style>
+    <script>
+        // Function to confirm reboot
+        function confirmReboot() {
+            return confirm("Are you sure you want to reboot the system?");
+        }
+
+        // Function to confirm shutdown
+        function confirmShutdown() {
+            return confirm("Are you sure you want to shut down the system?");
+        }
+
+        // Automatically update the distance every 5 seconds
+        function updateDistance() {
+            fetch('/get_distance')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('distance').innerText = data.distance + ' cm';
+                });
+        }
+
+        setInterval(updateDistance, 5000);
+    </script>
+</head>
+<body>
+    <h1>LiDAR Control Interface</h1>
+    <p>Detected Distance: <strong id="distance">Loading...</strong></p>
+
+    <button class="{{ 'on' if lights_enabled else 'off' }}" onclick="location.href='/toggle_lights'">
+        {{ 'Turn Lights Off' if lights_enabled else 'Turn Lights On' }}
+    </button>
+
+    <button class="{{ 'on' if chase_mode_enabled else 'off' }}" onclick="location.href='/toggle_chase_mode'">
+        {{ 'Turn Chase Mode Off' if chase_mode_enabled else 'Turn Chase Mode On' }}
+    </button>
+
+    <button class="{{ 'on' if flicker_mode_enabled else 'off' }}" onclick="location.href='/toggle_flicker_mode'">
+        {{ 'Turn Flicker Mode Off' if flicker_mode_enabled else 'Turn Flicker Mode On' }}
+    </button>
+
+    <button class="{{ 'on' if distance_following_enabled else 'off' }}" onclick="location.href='/toggle_distance_following'">
+        {{ 'Turn Distance Following Off' if distance_following_enabled else 'Turn Distance Following On' }}
+    </button>
+
+    <!-- Reboot button with confirmation -->
+    <button class="reboot" onclick="if (confirmReboot()) { location.href='/reboot'; }">Reboot System</button>
+
+    <!-- Shutdown button with confirmation -->
+    <button class="shutdown" onclick="if (confirmShutdown()) { location.href='/shutdown'; }">Shutdown System</button>
+</body>
+</html>
