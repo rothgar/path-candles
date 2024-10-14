@@ -26,6 +26,7 @@ lights_enabled = True
 chase_mode_enabled = False
 flicker_mode_enabled = False
 distance_following_enabled = False  # New mode for lighting based on LiDAR distance
+sparkle_mode_enabled = False
 
 # Flask app setup
 app = Flask(__name__)
@@ -65,10 +66,32 @@ def flicker_color(brightness):
     b = int(random.randint(0, 30) * brightness)     # Blue is very low, giving it a warm tone
     return Color(r, g, b)
 
+def sparkle_effect():
+    """Randomly light up individual LEDs for a sparkle effect."""
+    sparkle_duration = 0.05  # Duration each sparkle stays on
+    sparkle_probability = 0.2  # Probability of each LED lighting up
+
+    while sparkle_mode_enabled:
+        # Turn off all LEDs before starting the sparkle effect
+        for i in range(strip.numPixels()):
+            strip.setPixelColor(i, Color(0, 0, 0))
+
+        # Randomly light up some LEDs
+        for i in range(strip.numPixels()):
+            if random.random() < sparkle_probability:
+                color = flicker_color(1.0)  # Full brightness for sparkles
+                strip.setPixelColor(i, color)
+
+        strip.show()
+        time.sleep(sparkle_duration)
+
+    # Turn off all LEDs when sparkle mode is disabled
+    turn_off_lights()
+
 def flame_flicker_effect():
     """Run the flame flicker effect with random LEDs flickering."""
     flicker_pixels = random.sample(range(LED_COUNT), k=int(LED_COUNT * 0.1))  # Flicker 10% of LEDs
-    max_pixels = 11
+    max_pixels = 22
     duration = 10 
     while flicker_mode_enabled:
         start_time = time.time()
@@ -252,6 +275,19 @@ def toggle_distance_following():
         threading.Thread(target=distance_following_effect).start()  # Run distance-following in a separate thread
     else:
         print("Distance following mode disabled")
+        turn_off_lights()
+    return redirect(url_for('index'))
+
+@app.route('/toggle_sparkle_mode')
+def toggle_sparkle_mode():
+    """Toggle sparkle mode on and off."""
+    global sparkle_mode_enabled
+    sparkle_mode_enabled = not sparkle_mode_enabled
+    if sparkle_mode_enabled:
+        print("Sparkle mode enabled")
+        threading.Thread(target=sparkle_effect).start()  # Run sparkle mode in a separate thread
+    else:
+        print("Sparkle mode disabled")
         turn_off_lights()
     return redirect(url_for('index'))
 

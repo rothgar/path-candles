@@ -7,25 +7,22 @@
     <style>
       /* Body Styling */
       body {
-        background-color: #0d0d0d; /* Dark background */
+        background-color: #0d0d0d;
         font-family: "Creepster", Arial, sans-serif;
         text-align: center;
         margin: 50px;
-        color: #f4f4f4; /* Light text for visibility */
+        color: #f4f4f4;
         overflow: hidden;
       }
 
-      /* Glowing Title */
       h1 {
-        color: #f49b42; /* Halloween orange */
+        color: #f49b42;
         text-shadow:
           0 0 10px #ff6600,
-          0 0 20px #ff6600,
-          0 0 30px #ff3300;
+          0 0 20px #ff3300;
         animation: flicker 2s infinite alternate;
       }
 
-      /* Flickering Animation for Title */
       @keyframes flicker {
         0%,
         100% {
@@ -38,48 +35,59 @@
 
       p {
         font-size: 22px;
-        color: #cfcfcf; /* Light gray */
+        color: #cfcfcf;
+      }
+
+      /* Button Container for Layout */
+      .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
       }
 
       /* Button Styles */
       button {
-        display: inline-block;
-        padding: 15px 25px;
-        font-size: 22px;
-        margin: 10px;
+        width: 200px; /* Set consistent width */
+        height: 60px; /* Set consistent height */
+        font-size: 20px;
         cursor: pointer;
-        border-radius: 5px;
+        border-radius: 10px;
         border: none;
         color: white;
         transition:
           transform 0.2s ease-in-out,
           box-shadow 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); /* Shadow effect */
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
       }
 
       .on {
-        background-color: #4caf50; /* Green for On */
+        background-color: #4caf50;
       }
 
       .off {
-        background-color: #f44336; /* Red for Off */
+        background-color: #f44336;
+      }
+
+      .sparkle {
+        background-color: #e6e600;
       }
 
       .reboot {
-        background-color: #ff9800; /* Pumpkin orange for Reboot */
+        background-color: #ff9800;
       }
 
       .shutdown {
-        background-color: #b30000; /* Blood red for Shutdown */
+        background-color: #b30000;
       }
 
-      /* Button Hover Effects */
+      /* Hover Effects */
       button:hover {
-        transform: scale(1.1); /* Slight zoom on hover */
-        box-shadow: 0 10px 25px rgba(255, 94, 0, 0.5); /* Orange glow */
+        transform: scale(1.1);
+        box-shadow: 0 10px 25px rgba(255, 255, 0, 0.7);
       }
 
-      /* Spooky Background Overlay */
+      /* Background Overlay */
       .background-overlay {
         position: fixed;
         top: 0;
@@ -88,23 +96,20 @@
         height: 100%;
         background: url("https://cdn.pixabay.com/photo/2017/09/26/13/57/halloween-2791116_960_720.png")
           no-repeat center center/cover;
-        opacity: 0.2; /* Make the background subtle */
-        z-index: -1; /* Send it behind everything else */
+        opacity: 0.2;
+        z-index: -1;
       }
     </style>
 
     <script>
-      // Function to confirm reboot
       function confirmReboot() {
         return confirm("Are you sure you want to reboot the system?");
       }
 
-      // Function to confirm shutdown
       function confirmShutdown() {
         return confirm("Are you sure you want to shut down the system?");
       }
 
-      // Automatically update the distance every 5 seconds
       function updateDistance() {
         fetch("/get_distance")
           .then((response) => response.json())
@@ -114,63 +119,64 @@
           });
       }
 
-      // Periodically update the distance
       setInterval(updateDistance, 5000);
     </script>
   </head>
   <body>
     <div class="background-overlay"></div>
-    <!-- Spooky Background -->
 
     <h1>LiDAR Control Interface - Halloween Edition</h1>
     <p>Detected Distance: <strong id="distance">Loading...</strong></p>
 
-    <!-- Control Buttons -->
-    <button
-      class="{{ 'on' if lights_enabled else 'off' }}"
-      onclick="location.href='/toggle_lights'"
-    >
-      {{ 'Turn Lights Off' if lights_enabled else 'Turn Lights On' }}
-    </button>
+    <div class="button-container">
+      <button
+        class="{{ 'on' if lights_enabled else 'off' }}"
+        onclick="location.href='/toggle_lights'"
+      >
+        {{ 'Turn Lights Off' if lights_enabled else 'Turn Lights On' }}
+      </button>
 
-    <button
-      class="{{ 'on' if chase_mode_enabled else 'off' }}"
-      onclick="location.href='/toggle_chase_mode'"
-    >
-      {{ 'Turn Chase Mode Off' if chase_mode_enabled else 'Turn Chase Mode On'
-      }}
-    </button>
+      <button
+        class="{{ 'on' if chase_mode_enabled else 'off' }}"
+        onclick="location.href='/toggle_chase_mode'"
+      >
+        {{ 'Turn Chase Mode Off' if chase_mode_enabled else 'Turn Chase Mode On'
+        }}
+      </button>
 
-    <button
-      class="{{ 'on' if flicker_mode_enabled else 'off' }}"
-      onclick="location.href='/toggle_flicker_mode'"
-    >
-      {{ 'Turn Flicker Mode Off' if flicker_mode_enabled else 'Turn Flicker Mode
-      On' }}
-    </button>
+      <button
+        class="{{ 'on' if flicker_mode_enabled else 'off' }}"
+        onclick="location.href='/toggle_flicker_mode'"
+      >
+        {{ 'Turn Flicker Mode Off' if flicker_mode_enabled else 'Turn Flicker
+        Mode On' }}
+      </button>
 
-    <button
-      class="{{ 'on' if distance_following_enabled else 'off' }}"
-      onclick="location.href='/toggle_distance_following'"
-    >
-      {{ 'Turn Distance Following Off' if distance_following_enabled else 'Turn
-      Distance Following On' }}
-    </button>
+      <button
+        class="{{ 'on' if distance_following_enabled else 'off' }}"
+        onclick="location.href='/toggle_distance_following'"
+      >
+        {{ 'Turn Distance Following Off' if distance_following_enabled else
+        'Turn Distance Following On' }}
+      </button>
 
-    <!-- Reboot Button with Confirmation -->
-    <button
-      class="reboot"
-      onclick="if (confirmReboot()) { location.href='/reboot'; }"
-    >
-      Reboot System
-    </button>
+      <button class="sparkle" onclick="location.href='/toggle_sparkle_mode'">
+        Toggle Sparkle Mode
+      </button>
 
-    <!-- Shutdown Button with Confirmation -->
-    <button
-      class="shutdown"
-      onclick="if (confirmShutdown()) { location.href='/shutdown'; }"
-    >
-      Shutdown System
-    </button>
+      <button
+        class="reboot"
+        onclick="if (confirmReboot()) { location.href='/reboot'; }"
+      >
+        Reboot System
+      </button>
+
+      <button
+        class="shutdown"
+        onclick="if (confirmShutdown()) { location.href='/shutdown'; }"
+      >
+        Shutdown System
+      </button>
+    </div>
   </body>
 </html>
