@@ -50,6 +50,12 @@ def turn_on_lights():
     threading.Thread(target=flame_flicker_effect).start()  # Run flicker mode in a separate thread
     strip.show()
 
+def turn_off_lights():
+    """Turn off all the LEDs."""
+    for i in range(LED_COUNT):
+        strip.setPixelColor(i, Color(0, 0, 0))
+    strip.show()
+
 def schedule_thread():
     """Run the scheduled tasks in a separate thread."""
     while True:
@@ -241,12 +247,6 @@ def chase_mode():
 
     # Turn off lights when chase mode is disabled
     turn_off_lights()
-
-def turn_off_lights():
-    """Turn off all the LEDs."""
-    for i in range(LED_COUNT):
-        strip.setPixelColor(i, Color(0, 0, 0))
-    strip.show()
 
 def start_lidar_thread():
     """Start the LiDAR distance reading thread."""

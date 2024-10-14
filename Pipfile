@@ -23,6 +23,7 @@ pyusb==1.2.1
 PyYAML==6.0.2
 RPi.GPIO==0.7.1
 rpi_ws281x==5.0.0
+schedule==1.2.2
 serial==0.0.97
 sysv-ipc==1.1.0
 toml==0.10.2
