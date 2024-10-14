@@ -174,7 +174,7 @@ def chase_mode():
                 strip.setPixelColor(current_led - i, color)
 
         strip.show()
-        time.sleep(0.05)  # Control the speed of the meteor
+        time.sleep(0.01)  # Control the speed of the meteor
 
         # Move the meteor head based on direction
         current_led += direction
