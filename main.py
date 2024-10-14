@@ -1,4 +1,5 @@
 import serial
+import schedule
 import time
 import random
 import threading
@@ -40,6 +41,37 @@ ser = serial.Serial(LIDAR_PORT, LIDAR_BAUDRATE, timeout=1)
 
 # Thread lock to safely share data between threads
 distance_lock = threading.Lock()
+
+def turn_on_lights():
+    """Turn on all the LEDs."""
+    global lights_enabled
+    lights_enabled = True
+    print("Lights turned on at 5 PM")
+    threading.Thread(target=flame_flicker_effect).start()  # Run flicker mode in a separate thread
+    strip.show()
+
+def schedule_thread():
+    """Run the scheduled tasks in a separate thread."""
+    while True:
+        schedule.run_pending()
+        time.sleep(1)  # Check every second
+
+# Schedule lights to turn on at 5 PM and off at 5 AM
+schedule.every().day.at("17:00").do(turn_on_lights)  # 5 PM
+schedule.every().day.at("05:00").do(turn_off_lights)  # 5 AM
+
+# Start the schedule thread
+threading.Thread(target=schedule_thread, daemon=True).start()
+
+@app.route('/toggle_lights')
+def toggle_lights():
+    """Manually toggle the lights."""
+    global lights_enabled
+    if lights_enabled:
+        turn_off_lights()
+    else:
+        turn_on_lights()
+    return redirect(url_for('index'))
 
 def read_lidar_distance():
     """Continuously reads distance from the LiDAR sensor in a background thread."""

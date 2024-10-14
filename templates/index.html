@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LiDAR Control Interface - Halloween Edition</title>
     <style>
-      /* Body Styling */
       body {
         background-color: #0d0d0d;
         font-family: "Creepster", Arial, sans-serif;
@@ -38,7 +37,6 @@
         color: #cfcfcf;
       }
 
-      /* Button Container for Layout */
       .button-container {
         display: flex;
         flex-wrap: wrap;
@@ -46,10 +44,9 @@
         gap: 15px;
       }
 
-      /* Button Styles */
       button {
-        width: 200px; /* Set consistent width */
-        height: 60px; /* Set consistent height */
+        width: 200px;
+        height: 60px;
         font-size: 20px;
         cursor: pointer;
         border-radius: 10px;
@@ -81,13 +78,11 @@
         background-color: #b30000;
       }
 
-      /* Hover Effects */
       button:hover {
         transform: scale(1.1);
         box-shadow: 0 10px 25px rgba(255, 255, 0, 0.7);
       }
 
-      /* Background Overlay */
       .background-overlay {
         position: fixed;
         top: 0;
@@ -119,7 +114,18 @@
           });
       }
 
-      setInterval(updateDistance, 5000);
+      setInterval(updateDistance, 5000); // Update every 5 seconds
+
+      function toggleLights() {
+        fetch("/toggle_lights").then(() => {
+          const lightButton = document.getElementById("toggle-lights");
+          lightButton.classList.toggle("on");
+          lightButton.classList.toggle("off");
+          lightButton.innerText = lightButton.classList.contains("on")
+            ? "Turn Lights Off"
+            : "Turn Lights On";
+        });
+      }
     </script>
   </head>
   <body>
@@ -130,8 +136,9 @@
 
     <div class="button-container">
       <button
+        id="toggle-lights"
         class="{{ 'on' if lights_enabled else 'off' }}"
-        onclick="location.href='/toggle_lights'"
+        onclick="toggleLights()"
       >
         {{ 'Turn Lights Off' if lights_enabled else 'Turn Lights On' }}
       </button>
