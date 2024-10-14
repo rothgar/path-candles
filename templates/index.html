@@ -1,88 +1,176 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiDAR Control Interface</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LiDAR Control Interface - Halloween Edition</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
+      /* Body Styling */
+      body {
+        background-color: #0d0d0d; /* Dark background */
+        font-family: "Creepster", Arial, sans-serif;
+        text-align: center;
+        margin: 50px;
+        color: #f4f4f4; /* Light text for visibility */
+        overflow: hidden;
+      }
+
+      /* Glowing Title */
+      h1 {
+        color: #f49b42; /* Halloween orange */
+        text-shadow:
+          0 0 10px #ff6600,
+          0 0 20px #ff6600,
+          0 0 30px #ff3300;
+        animation: flicker 2s infinite alternate;
+      }
+
+      /* Flickering Animation for Title */
+      @keyframes flicker {
+        0%,
+        100% {
+          opacity: 1;
         }
-        button {
-            display: inline-block;
-            padding: 15px 25px;
-            font-size: 20px;
-            margin: 10px;
-            cursor: pointer;
-            border-radius: 5px;
-            border: none;
+        50% {
+          opacity: 0.8;
         }
-        .on {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .off {
-            background-color: #f44336;
-            color: white;
-        }
-        .reboot {
-            background-color: #ff9800;
-            color: white;
-        }
-        .shutdown {
-            background-color: #d9534f;
-            color: white;
-        }
+      }
+
+      p {
+        font-size: 22px;
+        color: #cfcfcf; /* Light gray */
+      }
+
+      /* Button Styles */
+      button {
+        display: inline-block;
+        padding: 15px 25px;
+        font-size: 22px;
+        margin: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        border: none;
+        color: white;
+        transition:
+          transform 0.2s ease-in-out,
+          box-shadow 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4); /* Shadow effect */
+      }
+
+      .on {
+        background-color: #4caf50; /* Green for On */
+      }
+
+      .off {
+        background-color: #f44336; /* Red for Off */
+      }
+
+      .reboot {
+        background-color: #ff9800; /* Pumpkin orange for Reboot */
+      }
+
+      .shutdown {
+        background-color: #b30000; /* Blood red for Shutdown */
+      }
+
+      /* Button Hover Effects */
+      button:hover {
+        transform: scale(1.1); /* Slight zoom on hover */
+        box-shadow: 0 10px 25px rgba(255, 94, 0, 0.5); /* Orange glow */
+      }
+
+      /* Spooky Background Overlay */
+      .background-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("https://cdn.pixabay.com/photo/2017/09/26/13/57/halloween-2791116_960_720.png")
+          no-repeat center center/cover;
+        opacity: 0.2; /* Make the background subtle */
+        z-index: -1; /* Send it behind everything else */
+      }
     </style>
+
     <script>
-        // Function to confirm reboot
-        function confirmReboot() {
-            return confirm("Are you sure you want to reboot the system?");
-        }
+      // Function to confirm reboot
+      function confirmReboot() {
+        return confirm("Are you sure you want to reboot the system?");
+      }
 
-        // Function to confirm shutdown
-        function confirmShutdown() {
-            return confirm("Are you sure you want to shut down the system?");
-        }
+      // Function to confirm shutdown
+      function confirmShutdown() {
+        return confirm("Are you sure you want to shut down the system?");
+      }
 
-        // Automatically update the distance every 5 seconds
-        function updateDistance() {
-            fetch('/get_distance')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('distance').innerText = data.distance + ' cm';
-                });
-        }
+      // Automatically update the distance every 5 seconds
+      function updateDistance() {
+        fetch("/get_distance")
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("distance").innerText =
+              data.distance + " cm";
+          });
+      }
 
-        setInterval(updateDistance, 5000);
+      // Periodically update the distance
+      setInterval(updateDistance, 5000);
     </script>
-</head>
-<body>
-    <h1>LiDAR Control Interface</h1>
+  </head>
+  <body>
+    <div class="background-overlay"></div>
+    <!-- Spooky Background -->
+
+    <h1>LiDAR Control Interface - Halloween Edition</h1>
     <p>Detected Distance: <strong id="distance">Loading...</strong></p>
 
-    <button class="{{ 'on' if lights_enabled else 'off' }}" onclick="location.href='/toggle_lights'">
-        {{ 'Turn Lights Off' if lights_enabled else 'Turn Lights On' }}
+    <!-- Control Buttons -->
+    <button
+      class="{{ 'on' if lights_enabled else 'off' }}"
+      onclick="location.href='/toggle_lights'"
+    >
+      {{ 'Turn Lights Off' if lights_enabled else 'Turn Lights On' }}
     </button>
 
-    <button class="{{ 'on' if chase_mode_enabled else 'off' }}" onclick="location.href='/toggle_chase_mode'">
-        {{ 'Turn Chase Mode Off' if chase_mode_enabled else 'Turn Chase Mode On' }}
+    <button
+      class="{{ 'on' if chase_mode_enabled else 'off' }}"
+      onclick="location.href='/toggle_chase_mode'"
+    >
+      {{ 'Turn Chase Mode Off' if chase_mode_enabled else 'Turn Chase Mode On'
+      }}
     </button>
 
-    <button class="{{ 'on' if flicker_mode_enabled else 'off' }}" onclick="location.href='/toggle_flicker_mode'">
-        {{ 'Turn Flicker Mode Off' if flicker_mode_enabled else 'Turn Flicker Mode On' }}
+    <button
+      class="{{ 'on' if flicker_mode_enabled else 'off' }}"
+      onclick="location.href='/toggle_flicker_mode'"
+    >
+      {{ 'Turn Flicker Mode Off' if flicker_mode_enabled else 'Turn Flicker Mode
+      On' }}
     </button>
 
-    <button class="{{ 'on' if distance_following_enabled else 'off' }}" onclick="location.href='/toggle_distance_following'">
-        {{ 'Turn Distance Following Off' if distance_following_enabled else 'Turn Distance Following On' }}
+    <button
+      class="{{ 'on' if distance_following_enabled else 'off' }}"
+      onclick="location.href='/toggle_distance_following'"
+    >
+      {{ 'Turn Distance Following Off' if distance_following_enabled else 'Turn
+      Distance Following On' }}
     </button>
 
-    <!-- Reboot button with confirmation -->
-    <button class="reboot" onclick="if (confirmReboot()) { location.href='/reboot'; }">Reboot System</button>
+    <!-- Reboot Button with Confirmation -->
+    <button
+      class="reboot"
+      onclick="if (confirmReboot()) { location.href='/reboot'; }"
+    >
+      Reboot System
+    </button>
 
-    <!-- Shutdown button with confirmation -->
-    <button class="shutdown" onclick="if (confirmShutdown()) { location.href='/shutdown'; }">Shutdown System</button>
-</body>
+    <!-- Shutdown Button with Confirmation -->
+    <button
+      class="shutdown"
+      onclick="if (confirmShutdown()) { location.href='/shutdown'; }"
+    >
+      Shutdown System
+    </button>
+  </body>
 </html>
