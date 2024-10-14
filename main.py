@@ -60,10 +60,12 @@ def read_lidar_distance():
         print(f"Error reading from LiDAR: {e}")
 
 def flicker_color(brightness):
-    """Generate a color with a flicker effect by varying brightness."""
-    r = int(random.randint(180, 255) * brightness)  # Red varies from bright to slightly dim
-    g = int(random.randint(50, 150) * brightness)   # Green adds warmth, varies between orange and yellow
-    b = int(random.randint(0, 30) * brightness)     # Blue is very low, giving it a warm tone
+    """Generate a warm flicker color (red, yellow, orange) based on brightness."""
+    # Generate random warm color within the red-yellow-orange spectrum
+    r = int(random.uniform(200, 255) * brightness)  # Red component (bright)
+    g = int(random.uniform(100, 150) * brightness)  # Green component (adds yellow/orange hue)
+    b = int(random.uniform(0, 30) * brightness)     # Blue component (very low to keep it warm)
+    
     return Color(r, g, b)
 
 def sparkle_effect():
@@ -90,21 +92,22 @@ def sparkle_effect():
 
 def flame_flicker_effect():
     """Run the flame flicker effect with random LEDs flickering."""
-    flicker_pixels = random.sample(range(LED_COUNT), k=int(LED_COUNT * 0.1))  # Flicker 10% of LEDs
-    max_pixels = 22
-    duration = 10 
+    flicker_pixels = random.sample(range(LED_COUNT), k=min(22, LED_COUNT))  # Max 22 flickering LEDs
+    max_pixels = 22  # Maximum flickering pixels at a time
+    duration = 10  # Duration for each flickering cycle in seconds
+
     while flicker_mode_enabled:
         start_time = time.time()
         while time.time() - start_time < duration:
+            # Randomly update the brightness and color of flickering pixels
             for pixel in flicker_pixels:
-                brightness = random.uniform(0.5, 1.0)  # Random brightness to simulate flicker
+                brightness = random.uniform(0.5, 1.0)  # Brightness variation (50% to 100%)
                 color = flicker_color(brightness)
                 strip.setPixelColor(pixel, color)
             strip.show()
-            time.sleep(random.uniform(0.05, 0.09))  # Random flicker speed for each LED
+            time.sleep(random.uniform(0.05, 0.1))  # Random flicker speed
 
-
-        # Add a new random pixel to the flicker_pixels array if there's room
+        # Add a new random pixel if space allows
         if len(flicker_pixels) < max_pixels:
             new_pixel = random.choice([i for i in range(LED_COUNT) if i not in flicker_pixels])
             flicker_pixels.append(new_pixel)
@@ -112,13 +115,10 @@ def flame_flicker_effect():
         # Remove a pixel randomly to keep the flicker effect dynamic
         if len(flicker_pixels) >= max_pixels:
             removed_pixel = flicker_pixels.pop(random.randint(0, len(flicker_pixels) - 1))
-            strip.setPixelColor(removed_pixel, Color(0, 0, 0))  # Turn off the removed pixel
+            strip.setPixelColor(removed_pixel, Color(0, 0, 0))  # Turn off removed pixel
             strip.show()
 
-        # Pause before updating again
-        time.sleep(random.uniform(0.05, 0.1))
-
-    # Turn off lights when flicker mode is disabled
+    # Turn off all LEDs when flicker mode is disabled
     turn_off_lights()
 
 def distance_to_leds(distance):
