@@ -69,16 +69,6 @@ schedule.every().day.at("05:00").do(turn_off_lights)  # 5 AM
 # Start the schedule thread
 threading.Thread(target=schedule_thread, daemon=True).start()
 
-@app.route('/toggle_lights')
-def toggle_lights():
-    """Manually toggle the lights."""
-    global lights_enabled
-    if lights_enabled:
-        turn_off_lights()
-    else:
-        turn_on_lights()
-    return redirect(url_for('index'))
-
 def read_lidar_distance():
     """Continuously reads distance from the LiDAR sensor in a background thread."""
     global current_distance
