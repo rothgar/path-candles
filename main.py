@@ -141,23 +141,48 @@ def distance_following_effect():
     # Turn off the lights when distance-following mode is disabled
     turn_off_lights()
 
+def fade_to_black(pixel, decay_factor=0.8):
+    """Gradually fade the pixel color to black."""
+    color = strip.getPixelColor(pixel)
+    r = int((color >> 16) & 0xFF)
+    g = int((color >> 8) & 0xFF)
+    b = int(color & 0xFF)
+
+    r = int(r * decay_factor)
+    g = int(g * decay_factor)
+    b = int(b * decay_factor)
+
+    strip.setPixelColor(pixel, Color(r, g, b))
+
 def chase_mode():
-    """Run chase mode, where LEDs chase from one end to the other and bounce back."""
+    """Run chase mode with a 10-LED-wide meteor tail effect."""
     direction = 1  # 1 means forward, -1 means backward
     current_led = 0
-    
-    while chase_mode_enabled:
-        strip.setPixelColor(current_led, flicker_color(1.0))  # Turn on the current LED
-        strip.show()
-        time.sleep(0.05)  # Faster speed for the chase effect
-        strip.setPixelColor(current_led, Color(0, 0, 0))  # Turn off the previous LED
+    meteor_size = 10  # Width of the meteor head
+    trail_decay = 0.75  # Decay factor for fading trail
 
-        # Update the LED index based on direction
+    while chase_mode_enabled:
+        # Fade all LEDs to create the meteor trail effect
+        for i in range(strip.numPixels()):
+            fade_to_black(i, trail_decay)
+
+        # Draw the meteor head and trail
+        for i in range(meteor_size):
+            if 0 <= (current_led - i) < strip.numPixels():
+                brightness = 1.0 - (i / meteor_size)  # Brightness decreases along the trail
+                color = flicker_color(brightness)  # Use dynamic flickering color
+                strip.setPixelColor(current_led - i, color)
+
+        strip.show()
+        time.sleep(0.05)  # Control the speed of the meteor
+
+        # Move the meteor head based on direction
         current_led += direction
 
-        # If we reach the end (LED_COUNT-1) or beginning (0), reverse the direction
-        if current_led == LED_COUNT - 1 or current_led == 0:
+        # Reverse direction at the ends to bounce back
+        if current_led >= strip.numPixels() or current_led < 0:
             direction *= -1
+            current_led += direction  # Correct the position after reversing
 
     # Turn off lights when chase mode is disabled
     turn_off_lights()
