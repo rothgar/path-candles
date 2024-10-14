@@ -7,7 +7,7 @@ from flask import Flask, render_template, redirect, url_for, jsonify
 from rpi_ws281x import PixelStrip, Color
 
 # LED strip configuration:
-LED_COUNT = 100        # Number of LED pixels.
+LED_COUNT = 200        # Number of LED pixels.
 LED_PIN = 18           # GPIO pin connected to the NeoPixels (must support PWM).
 LED_FREQ_HZ = 800000   # LED signal frequency in hertz (usually 800kHz)
 LED_DMA = 10           # DMA channel to use for generating signal (try 10)
